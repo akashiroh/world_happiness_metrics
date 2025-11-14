@@ -15,7 +15,7 @@ def download_datasets():
     df = pd.read_csv("https://ourworldindata.org/grapher/economic-inequality-gini-index.csv?v=1&csvType=full&useColumnShortNames=true", storage_options = {'User-Agent': 'Our World In Data data fetch/1.0'})
     metadata = requests.get("https://ourworldindata.org/grapher/economic-inequality-gini-index.metadata.json?v=1&csvType=full&useColumnShortNames=true").json()
 
-    df.to_csv(SAVE_DIR / "gini_dataset.csv")
+    df.to_csv(SAVE_DIR / "gini_dataset.csv", index=False)
     print("Saved Gini Dataset to: ", SAVE_DIR / "gini_dataset.csv")
     with open(SAVE_DIR / "gini_metadata.csv", "w") as f: f.write(json.dumps(metadata))
     print("Saved Gini Metadata to: ", SAVE_DIR / "gini_metadata.json")
