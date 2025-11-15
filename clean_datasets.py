@@ -45,21 +45,32 @@ def clean_and_merge():
     gini_df = pd.read_csv(gini_path)
     whr_2023_df = pd.read_csv(whr_2023_path)
 
-    collect = []
-    for entity in gini_df["Entity"].unique():
-        df = gini_df[gini_df["Entity"] == entity]
-
-        if (2023 in df["Year"].tolist()) and (not df[df["Year"] == 2023]["gini__ppp_version_2021__poverty_line_no_poverty_line__welfare_type_income_or_consumption__table_income_or_consumption_consolidated__survey_comparability_no_spells"].isna().any()):
-            collect.append(df)
-        elif (2023 in df["Year"].tolist()) and (len(df) > 1):
-            if df[df["Year"] == 2023]["gini__ppp_version_2021__poverty_line_no_poverty_line__welfare_type_income_or_consumption__table_income_or_consumption_consolidated__survey_comparability_no_spells"].isna().any():
-                df["gini__ppp_version_2021__poverty_line_no_poverty_line__welfare_type_income_or_consumption__table_income_or_consumption_consolidated__survey_comparability_no_spells"] = df["gini__ppp_version_2021__poverty_line_no_poverty_line__welfare_type_income_or_consumption__table_income_or_consumption_consolidated__survey_comparability_no_spells"].fillna(df["gini__ppp_version_2021__poverty_line_no_poverty_line__welfare_type_income_or_consumption__table_income_or_consumption_consolidated__survey_comparability_no_spells"].mean())
-                collect.append(df)
-    gini_df = pd.concat(collect)
-
-    # clean datasets
+    # rename columns
     gini_df = rename_gini(gini_df)
     whr_2023_df = rename_whr(whr_2023_df)
+
+    collect = []
+    nans = []
+    for entity in gini_df["entity"].unique():
+        df = gini_df[gini_df["entity"] == entity]
+
+        if (2023 in df["year"].tolist()) and (not df[df["year"] == 2023]["gini_index"].isna().any()):
+            collect.append(df)
+        elif (2023 in df["year"].tolist()) and (len(df) > 1):
+            if df[df["year"] == 2023]["gini_index"].isna().any():
+
+                weights = {year: 1/(2023-year) for year in df["year"]}
+                import ipdb
+                ipdb.set_trace()
+
+                df["gini_index"] = df["gini_index"].fillna(df["gini_index"].mean())
+                collect.append(df)
+                nans.append(df)
+    gini_df = pd.concat(collect)
+    nans = pd.concat(nans)
+    nans.to_csv(DATA_DIR / "countries_with_nans.csv", index=False)
+
+    # filter to our year
     gini_df = gini_df[gini_df["year"] == 2023]
 
     # select countries only in both datasets
