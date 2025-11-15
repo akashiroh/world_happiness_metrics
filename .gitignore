@@ -1,3 +1,9 @@
+# add ons
+data/
+*.csv
+*.json
+*.png
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
