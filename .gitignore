@@ -1,5 +1,6 @@
 # add ons
 data/
+dist/
 *.csv
 *.json
 *.png

@@ -1,4 +1,5 @@
 import pandas as pd
+import plotly.express as px
 import matplotlib.pyplot as plt
 from pathlib import Path
 
@@ -11,13 +12,19 @@ def plot_hists():
     data_path = DATA_DIR / "merged.csv"
     df = pd.read_csv(data_path)
 
-    fig, axes = plt.subplots(1, 2, figsize=(12, 8))
+    metric = "social_support"
 
-    for i, col in enumerate(["ladder_score", "gini_index"]):
-        axes[i].hist(df[col])
-        axes[i].set_title(col)
+    gini_2023 = df[df['year'] == 2023][['code', metric]]
+    fig = px.choropleth(
+        gini_2023,
+        locations='code',
+        color=metric,
+        hover_name='code',
+        color_continuous_scale='RdYlBu_r',
+        title=f'{" ".join(map(str.capitalize, metric.split("_")))} 2023'
+    )
+    fig.show()
 
-    plt.savefig("test.png")
 
 def explore():
     DATA_DIR = Path("data")
@@ -26,12 +33,11 @@ def explore():
     data_path = DATA_DIR / "countries_with_nans.csv"
     df = pd.read_csv(data_path)
 
-    for entity in df["entity"].unique()[:20]:
+    for entity in df["entity"].unique():
         ent_df = df[df["entity"] == entity]
-        breakpoint()
-        plt.plot(ent_df["gini_index"])
+        plt.plot(ent_df["year"], ent_df["gini_index"])
     plt.savefig("nans.png")
 
 
 if __name__ == "__main__":
-    explore()
+    plot_hists()
