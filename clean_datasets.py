@@ -58,12 +58,24 @@ def clean_and_merge():
             collect.append(df)
         elif (2023 in df["year"].tolist()) and (len(df) > 1):
             if df[df["year"] == 2023]["gini_index"].isna().any():
+                n = len(df)
+                if n == 1:
+                    df['gini_index'] = df["gini_index"].ffill()
+                elif n == 2 or n == 3:
+                    try:
+                        df['gini_index'] = df["gini_index"].interpolate(
+                            method='linear',
+                            limit_direction='both'
+                        )
+                    except:
+                        df['gini_index'] = df["gini_index"].ffill()
+                elif n >= 4:
+                    df['gini_index'] = df["gini_index"].interpolate(
+                        method='spline',
+                        order=2,
+                        limit_direction='both'
+                    )
 
-                weights = {year: 1/(2023-year) for year in df["year"]}
-                import ipdb
-                ipdb.set_trace()
-
-                df["gini_index"] = df["gini_index"].fillna(df["gini_index"].mean())
                 collect.append(df)
                 nans.append(df)
     gini_df = pd.concat(collect)

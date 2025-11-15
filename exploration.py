@@ -28,6 +28,7 @@ def explore():
 
     for entity in df["entity"].unique()[:20]:
         ent_df = df[df["entity"] == entity]
+        breakpoint()
         plt.plot(ent_df["gini_index"])
     plt.savefig("nans.png")
 
