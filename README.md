@@ -22,19 +22,19 @@ uv sync [optional flag] --no-cache
 
 usage:
 ```
-uv run main.py
+uv run src/main.py
 
 or
 
 source .venv/bin/activate
-python3 main.py
+python3 src/main.py
 
 uv add [python package]
 ```
 
 ## Dataset
 
-- We use the [World Happieness Report 2023 Dataset](https://www.kaggle.com/datasets/ajaypalsinghlo/world-happiness-report-2023) and the [Gini Dataset](https://ourworldindata.org/grapher/economic-inequality-gini-index)
+- We use the [World Happiness Report 2023 Dataset](https://www.kaggle.com/datasets/ajaypalsinghlo/world-happiness-report-2023) and the [Gini Dataset](https://ourworldindata.org/grapher/economic-inequality-gini-index)
 - Installation Instructions:
 ```
 uv sync
